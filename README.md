@@ -8,7 +8,7 @@ To see what it would look like, open [`modified_Albert Einstein - Wikipedia.html
 
 ## Live demo
 
-Originally I wanted this to be an extension, but because the modern Internet has become so terribly complicated, nothing I do seem to work. I originally planned for this to be a website extension, but the browser essentially treats 
+Originally I wanted this to be an extension, but because the modern Internet has become so terribly complicated, nothing I do seems to work. I originally planned for this to be a website extension where it dynamically changes the website content with a background script, but the browser essentially treats it as a malware phishing attack, and demands my extension to jump through many bureaucratic procedures to prove that it is not a malware.
 
 To run live on a website, you can use the Selenium script. This script will open a browser window and scroll down the page to force the page to load up all the dynamical content. After a few seconds, the script will start processing the images and modifying them:
 
@@ -25,7 +25,7 @@ Saved modified image to: output\modified_226.png
 
 5. Enjoy the cursed website.
 
-To go to a different website, you can change the `url` variable in `local_index.py` to the desired website. I'm sorry for the inconvenience, but as I said, the modern Internet is a mess.
+To go to a different website, you can change the `url` variable in `local_index.py` to the desired website. I'm sorry for the inconvenience, but getting the browser to dynamically run the script on every new page requires event listeners and message passing, and I'm out of stamina for doing that.
 
 ## Un-live demo
 
@@ -53,17 +53,16 @@ The script works in two steps, once over the image files, and once over the text
 The script uses the `BeautifulSoup` library to parse the HTML file and detect images, and parse them into `PIL` image objects. It then send those to the `apply_filter` function, which applies the following multi-step filter to the image:
 
 1. **Surreal Eye Effect:**
-    * **Eye Extraction and Cropping:**  Landmarks for both eyes (detected by the `face_recognition` package) are used to create polygons, effectively outlining the eyes. These polygons are used to extract the eye regions, which are then cropped to their respective bounding boxes.
-    * **Stretching:**  Both eye regions are stretched to a target size, determined by the original eye dimensions multiplied by a factor (1.1 in the code). This creates an enlarged, slightly exaggerated appearance.
-    * **Composite Eye Creation:** The stretched eye images are blended together with equal weight (0.5) to create a single, composite eye. This composite eye is further resized to match the intended proportions relative to the face.
-    * **Black Ellipse Mask:** A black ellipse is drawn on a separate image, centered between the original eyes. This ellipse is then blurred with a Gaussian filter, creating a soft-edged mask. The mask is then multiplied with the original image, effectively "cutting out" an elliptical region where the composite eye will be placed.
-    * **Composite Eye Placement:** The composite eye is further enlarged, sharpened, and placed onto a new image layer. This layer is then added to the original image, positioning the composite eye within the black elliptical region.
+    * **Eye Extraction and Cropping:**  Landmarks for both eyes (detected by the `face_recognition` package) are used to create polygons outlining the eyes, then cropped out.
+    * **Composite Eye:** The stretched eye images are scaled to the same dimensions and alpha-blended together. This composite eye is further resized to match the intended proportions relative to the face. I didn't want to use a standard eye because it would not match the overall image, so I used a composite eye directly sourced from the photo itself.
+    * **Black Ellipse:** A black ellipse is multiplied with the original face centered on the mid-point between the left corner of the left eye, and the right corner of the right eye.
+    * **Done:** The composite eye is enlarged, sharpened, and added to the original image, centered on the mid-point.
 
 2. **Mouth Cross:**
-    * **Landmark-Based Anchor Points:**  Facial landmarks for the chin, upper lip, and lower lip are used to define anchor points for the lines. These points are calculated as weighted averages of landmark coordinates, ensuring the lines are anchored to relevant facial features.
-    * **Jittered Line Drawing:**  Lines are drawn between the calculated anchor points, creating a cross pattern over the mouth. To introduce distortion, a jitter ratio is applied. This ratio determines the maximum random offset that can be applied to each endpoint of the lines, resulting in the uneven, slightly chaotic appearance of the cross. The line color and width are also configurable parameters. 
+    * **Landmark-Based Anchor Points:**  Facial landmarks for the chin, upper lip, and lower lip are used to define anchor points for the two crossed lines.
+    * **Jittered Lines:**  Multiple ines are drawn between the anchor points, creating a cross over the mouth. To create the effect of drawing by hand with a pen, each endpoint is jittered by a random amount.
 
-3. **Image Distortion and Overlay:**  The original image is block distorted, creating a pixelated effect. This distorted image is overlaid with the modified image containing the surreal eye and mouth cross, and then blended again with the original for a final, darker output. 
+3. **Image Distortion and Overlay:**  The original image is distorted by [`block_distortion`](https://github.com/epswartz/block_distortion), creating a pixelated effect. This distorted image is blended with the original image by the [overlay blend mode](https://en.wikipedia.org/wiki/Blend_modes).
 
 ### Text processing
 
@@ -91,11 +90,15 @@ Background scripts were pretty simple, until hackers started using it to run bac
 
 ## Credits
 
-Word lists came from [david47k/top-english-wordlists: Lists of most-frequently-used english words / nouns / verbs etc.](https://github.com/david47k/top-english-wordlists).
+Word lists: [david47k/top-english-wordlists: Lists of most-frequently-used english words / nouns / verbs etc.](https://github.com/david47k/top-english-wordlists).
 
-Face recognition by [ageitgey/face_recognition: The world's simplest facial recognition api for Python and the command line](https://github.com/ageitgey/face_recognition). It's awesome.
+Face recognition: [ageitgey/face_recognition: The world's simplest facial recognition api for Python and the command line](https://github.com/ageitgey/face_recognition).
+
+Block distortion effect: [epswartz/block_distortion: "Block Distortion" effects on images, to create some neat digital art.](https://github.com/epswartz/block_distortion)
 
 Dark word lists came from my brain.
+
+Programming by `Gemini 1.5 Pro` and `Claude 3.5 Sonnet` and me.
 
 Dreamcore aesthetic from the collective hallucinatorium.
 
