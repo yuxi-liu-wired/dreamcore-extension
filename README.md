@@ -2,9 +2,9 @@
 
 Some scripts that create a dreamcore/weirdcore aesthetic on web pages.
 
-![Example](./selenium/modified_Albert_Einstein_Wikipedia_screenshot.png){width=50%}
+![Example](./selenium/modified_Albert_Einstein_Wikipedia_screenshot.png)
 
-To see what it would look like, open [`modified_Albert Einstein - Wikipedia.html`](./selenium/modified_Albert Einstein - Wikipedia.html) and see for yourself.
+To see what it would look like, open [`modified_Albert Einstein - Wikipedia.html`](<./selenium/modified_Albert Einstein - Wikipedia.html>) and see for yourself.
 
 ## Live demo
 
