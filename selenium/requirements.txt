@@ -1,0 +1,8 @@
+pillow
+requests
+face_recognition
+dlib
+cmake
+block_distortion
+bs4
+tqdm
